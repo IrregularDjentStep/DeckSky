@@ -2,7 +2,7 @@ import {
   ButtonItem,
   PanelSection,
   PanelSectionRow,
-  Navigation,
+  TextField,
   staticClasses
 } from "@decky/ui";
 import {
@@ -37,13 +37,29 @@ function Content() {
   };
 
   return (
-    <PanelSection title="Panel Section">
+    <PanelSection title="Bluesky Accounts">
       <PanelSectionRow>
+         <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          paddingLeft: "15px",
+        }}
+      >
+        To begin, input your Bluesky account's username below
+        </div>
+        <TextField
+          label="Bluesky Username"
+          requiredLabel
+          >
+ 
+        </TextField>
         <ButtonItem
           layout="below"
           onClick={onClick}
         >
-          {result ?? "Add two numbers via Python"}
+          {result ?? "Login to a Bluesky account"}
         </ButtonItem>
       </PanelSectionRow>
       <PanelSectionRow>
