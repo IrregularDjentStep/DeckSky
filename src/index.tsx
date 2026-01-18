@@ -1,9 +1,12 @@
 import {
   ButtonItem,
+  DialogButton,
   PanelSection,
   PanelSectionRow,
   TextField,
-  staticClasses
+  staticClasses,
+  showModal,
+  ShowModalResult,
 } from "@decky/ui";
 import {
   addEventListener,
@@ -13,29 +16,40 @@ import {
   toaster,
   // routerHook
 } from "@decky/api"
+import {isValidHandle } from "@atproto/syntax";
+import { NodeOAuthClient, Session  } from "@atproto/oauth-client-node";
 import { useState } from "react";
 import { FaShip } from "react-icons/fa";
 
+import LoginModal from './components/LoginModal'
+
 // import logo from "../assets/logo.png";
 
-// This function calls the python function "add", which takes in two numbers and returns their sum (as a number)
-// Note the type annotations:
-//  the first one: [first: number, second: number] is for the arguments
-//  the second one: number is for the return value
-const add = callable<[first: number, second: number], number>("add");
 
 // This function calls the python function "start_timer", which takes in no arguments and returns nothing.
 // It starts a (python) timer which eventually emits the event 'timer_event'
 const startTimer = callable<[], void>("start_timer");
 
 function Content() {
-  const [result, setResult] = useState<number | undefined>();
+  const [modalResult, setModalResult] = useState<ShowModalResult | null>(null);
 
-  const onClick = async () => {
-    const result = await add(Math.random(), Math.random());
-    setResult(result);
-  };
+  //closes the current modal
+  const closeModal = () => {
+    modalResult?.Close();
+    setModalResult(null);
+  }
 
+
+  const openLoginModal = () => {
+    const result = showModal(<LoginModal closeModal={closeModal} />);
+    setModalResult(result);
+    
+  }
+
+  
+  // if there are no accounts added, show this
+
+  //otherwise, show every logged-in BSKY account
   return (
     <PanelSection title="Bluesky Accounts">
       <PanelSectionRow>
@@ -47,7 +61,7 @@ function Content() {
           paddingLeft: "15px",
         }}
       >
-        To begin, input your Bluesky account's username below
+        No accounts have been added yet. To begin, add an account below.
         </div>
         <TextField
           label="Bluesky Username"
@@ -55,12 +69,11 @@ function Content() {
           >
  
         </TextField>
-        <ButtonItem
-          layout="below"
-          onClick={onClick}
+        <DialogButton
+          onClick={openLoginModal}
         >
-          {result ?? "Login to a Bluesky account"}
-        </ButtonItem>
+          "Add New Account..."
+        </DialogButton>
       </PanelSectionRow>
       <PanelSectionRow>
         <ButtonItem
