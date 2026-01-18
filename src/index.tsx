@@ -1,5 +1,4 @@
 import {
-  ButtonItem,
   DialogButton,
   PanelSection,
   PanelSectionRow,
@@ -11,13 +10,10 @@ import {
 import {
   addEventListener,
   removeEventListener,
-  callable,
   definePlugin,
   toaster,
   // routerHook
 } from "@decky/api"
-import {isValidHandle } from "@atproto/syntax";
-import { NodeOAuthClient, Session  } from "@atproto/oauth-client-node";
 import { useState } from "react";
 import { FaShip } from "react-icons/fa";
 
@@ -25,10 +21,6 @@ import LoginModal from './components/LoginModal'
 
 // import logo from "../assets/logo.png";
 
-
-// This function calls the python function "start_timer", which takes in no arguments and returns nothing.
-// It starts a (python) timer which eventually emits the event 'timer_event'
-const startTimer = callable<[], void>("start_timer");
 
 function Content() {
   const [modalResult, setModalResult] = useState<ShowModalResult | null>(null);
@@ -75,14 +67,6 @@ function Content() {
           "Add New Account..."
         </DialogButton>
       </PanelSectionRow>
-      <PanelSectionRow>
-        <ButtonItem
-          layout="below"
-          onClick={() => startTimer()}
-        >
-          {"Start Python timer"}
-        </ButtonItem>
-      </PanelSectionRow>
 
       {/* <PanelSectionRow>
         <div style={{ display: "flex", justifyContent: "center" }}>
@@ -127,9 +111,9 @@ export default definePlugin(() => {
 
   return {
     // The name shown in various decky menus
-    name: "Test Plugin",
+    name: "DeckSky",
     // The element displayed at the top of your plugin's menu
-    titleView: <div className={staticClasses.Title}>Decky Example Plugin</div>,
+    titleView: <div className={staticClasses.Title}>DeckSky</div>,
     // The content of your plugin's menu
     content: <Content />,
     // The icon displayed in the plugin list
