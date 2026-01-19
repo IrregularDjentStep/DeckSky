@@ -2,7 +2,7 @@
   "name": "DeckSky",
   "author": "Gauss Raider",
   "flags": ["debug", "_root"],
-  "api_version": 1,
+  "api_version": 2,
   "publish": {
     "tags": ["template", "root"],
     "description": "Decky plugin that adds a context menu option in the media menu to upload their screenshots to Bluesky.",

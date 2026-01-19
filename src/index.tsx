@@ -23,7 +23,7 @@ import LoginModal from './components/LoginModal'
 
 
 function Content() {
-  const [modalResult, setModalResult] = useState<ShowModalResult | null>(null);
+   const [modalResult, setModalResult] = useState<ShowModalResult | null>(null);
 
   //closes the current modal
   const closeModal = () => {
@@ -37,9 +37,6 @@ function Content() {
     setModalResult(result);
     
   }
-
-  
-  // if there are no accounts added, show this
 
   //otherwise, show every logged-in BSKY account
   return (
@@ -55,16 +52,10 @@ function Content() {
       >
         No accounts have been added yet. To begin, add an account below.
         </div>
-        <TextField
-          label="Bluesky Username"
-          requiredLabel
-          >
- 
-        </TextField>
         <DialogButton
           onClick={openLoginModal}
         >
-          "Add New Account..."
+          Add New Account...
         </DialogButton>
       </PanelSectionRow>
 
