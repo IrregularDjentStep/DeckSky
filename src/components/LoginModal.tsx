@@ -1,4 +1,4 @@
-import { ConfirmModal, DialogBody, Focusable, TextField } from "@decky/ui";
+import { ConfirmModal, DialogBody, Focusable, TextField, Navigation} from "@decky/ui";
 
 import { useState } from "react";
 
