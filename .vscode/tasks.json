@@ -119,6 +119,20 @@
             ],
             "problemMatcher": []
         },
+
+        //"All-in-on" build & deploy task and restart
+        {
+            "label": "builddeployrestart",
+            "detail": "Builds plugin and deploys to deck, restarts",
+            "dependsOrder": "sequence",
+            "group": "none",
+            "dependsOn": [
+                "build",
+                "deploy",
+                "restartdecky"
+            ],
+            "problemMatcher": []
+        },
         //GENERAL TASKS
         //Update Decky Frontend Library, aka DFL
         {
