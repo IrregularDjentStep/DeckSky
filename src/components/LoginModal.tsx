@@ -2,9 +2,12 @@ import { ConfirmModal, DialogBody, Focusable, TextField } from "@decky/ui";
 
 import { useState } from "react";
 
- const [bOKDisabled, setBOKDisabled] = useState<boolean>(true);
 
 const LoginModal: React.FC<{ closeModal: () => void}> = ({closeModal}) =>{
+
+    const [bOKDisabled, setBOKDisabled] = useState<boolean>(true);
+    const [handle, setHandle] = useState<string>('');
+
     return (
         <ConfirmModal
       strTitle="Login to Bluesky"
@@ -22,6 +25,7 @@ const LoginModal: React.FC<{ closeModal: () => void}> = ({closeModal}) =>{
                 onChange={(e) =>
                     {
                       setBOKDisabled(e.target.value.trim().length !== 0)
+                      setHandle(e.target.value);
                     }
                 }>
 

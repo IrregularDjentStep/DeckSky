@@ -55,12 +55,6 @@ function Content() {
       >
         No accounts have been added yet. To begin, add an account below.
         </div>
-        <TextField
-          label="Bluesky Username"
-          requiredLabel
-          >
- 
-        </TextField>
         <DialogButton
           onClick={openLoginModal}
         >
