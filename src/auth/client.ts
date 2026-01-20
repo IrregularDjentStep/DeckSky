@@ -1,10 +1,11 @@
-import { NodeOAuthClient, NodeSavedState, NodeSavedSession, Session } from '@atproto/oauth-client-node'
+import { BrowserOAuthClient, } from '@atproto/oauth-client-browser'
 
 import { isValidHandle } from "@atproto/syntax";
-import { SessionStore, StateStore } from './storage';
+
 
 export function createNewClient () {
-  return new NodeOAuthClient({
+  return new BrowserOAuthClient({
+      handleResolver: "http://bsky.social",
       // This object will be used to build the payload of the /client-metadata.json
       // endpoint metadata, exposing the client metadata to the OAuth server.
       clientMetadata: {
@@ -19,16 +20,6 @@ export function createNewClient () {
         token_endpoint_auth_method: 'none',
         dpop_bound_access_tokens: true,
       },
-
-      // Used to authenticate the client to the token endpoint. Will be used to
-      // build the jwks object to be exposed on the "jwks_uri" endpoint.
-
-      // Interface to store authorization state data (during authorization flows)
-      stateStore: new StateStore(),
-
-      // Interface to store authenticated session data
-      sessionStore: new SessionStore()
-
   })
 }
 

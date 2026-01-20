@@ -1,5 +1,5 @@
 import { ConfirmModal, DialogBody, Focusable, TextField, Navigation} from "@decky/ui";
-
+import resolveHandle, {createNewClient} from '../auth/client';
 import { useState } from "react";
 
 
@@ -7,6 +7,10 @@ const LoginModal: React.FC<{ closeModal: () => void}> = ({closeModal}) =>{
 
     const [bOKDisabled, setBOKDisabled] = useState<boolean>(true);
     const [handle, setHandle] = useState<string>('');
+
+    const client = createNewClient();
+
+    
 
     return (
         <ConfirmModal
