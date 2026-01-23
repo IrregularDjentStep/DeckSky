@@ -6,24 +6,34 @@ import {
   staticClasses,
   showModal,
   ShowModalResult,
+  Navigation,
 } from "@decky/ui";
 import {
   addEventListener,
   removeEventListener,
   definePlugin,
   toaster,
-  // routerHook
+  routerHook
 } from "@decky/api"
 import { useState } from "react";
 import { FaShip } from "react-icons/fa";
 
 import LoginModal from './components/LoginModal'
-
+import { createNewClient } from "./auth/client";
+import {
+    AtprotoDohHandleResolver,
+    BrowserOAuthClient
+} from '@atproto/oauth-client-browser'
 // import logo from "../assets/logo.png";
 
-
-function Content() {
+async function Content() {
   const [modalResult, setModalResult] = useState<ShowModalResult | null>(null);
+  // how to set different handle resolvers for different users?
+  const client = await BrowserOAuthClient.load({
+        handleResolver: new AtprotoDohHandleResolver({dohEndpoint: 'https://cloudflare-dns.com/dns-query'}),
+        clientId: ""
+    });
+  client.init();
 
   //closes the current modal
   const closeModal = () => {
@@ -33,12 +43,11 @@ function Content() {
 
 
   const openLoginModal = () => {
-    const result = showModal(<LoginModal closeModal={closeModal} />);
+    const result = showModal(<LoginModal client={client} closeModal={closeModal} />);
     setModalResult(result);
     
   }
 
-  
   // if there are no accounts added, show this
 
   //otherwise, show every logged-in BSKY account
@@ -103,6 +112,7 @@ export default definePlugin(() => {
     });
   });
 
+
   return {
     // The name shown in various decky menus
     name: "DeckSky",
@@ -116,7 +126,7 @@ export default definePlugin(() => {
     onDismount() {
       console.log("Unloading")
       removeEventListener("timer_event", listener);
-      // serverApi.routerHook.removeRoute("/decky-plugin-test");
+      routerHook.removeRoute("/decky-plugin-test");
     },
   };
 });

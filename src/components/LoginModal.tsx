@@ -1,15 +1,31 @@
+
 import { ConfirmModal, DialogBody, Focusable, TextField, Navigation} from "@decky/ui";
-import resolveHandle, {createNewClient} from '../auth/client';
+import { BrowserOAuthClient } from "@atproto/oauth-client-browser";
+import { Browser } from "@decky/ui/dist/globals/steam-client/Browser";
 import { useState } from "react";
+import { resolveIdentity } from "../auth/client";
 
 
-const LoginModal: React.FC<{ closeModal: () => void}> = ({closeModal}) =>{
+const LoginModal: React.FC<{ client: BrowserOAuthClient, closeModal: () => void}> = ({client, closeModal}) =>{
 
     const [bOKDisabled, setBOKDisabled] = useState<boolean>(true);
     const [handle, setHandle] = useState<string>('');
 
-    const client = createNewClient();
-
+    async function loginHandler(handle: string){
+          try {
+            const handleResolver = resolveIdentity(handle);
+            
+            const url = await client.authorize(handle, {
+              state: "423142", //TODO: figure out how to do states
+              scope: 'atproto',
+            });
+      
+            Navigation.Navigate(url.toString());
+          } catch (error) {
+            throw error;
+          }
+      
+    }
     
 
     return (
@@ -20,6 +36,7 @@ const LoginModal: React.FC<{ closeModal: () => void}> = ({closeModal}) =>{
       bOKDisabled={bOKDisabled}
       onCancel={closeModal}
       onOK={() => {
+        loginHandler(handle)
         closeModal();
       }}>
         <DialogBody>
