@@ -31,7 +31,8 @@ async function Content() {
   // how to set different handle resolvers for different users?
   const client = await BrowserOAuthClient.load({
         handleResolver: new AtprotoDohHandleResolver({dohEndpoint: 'https://cloudflare-dns.com/dns-query'}),
-        clientId: ""
+        //TODO: replace with production version
+        clientId:  `http://localhost?redirect_uri=${encodeURIComponent("https://127.0.0.1:8080/decksky-callback")}&scope=${encodeURIComponent('atproto transition:generic')}`
     });
   client.init();
 
