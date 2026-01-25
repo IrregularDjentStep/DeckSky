@@ -19,8 +19,10 @@ const LoginModal: React.FC<{ client: BrowserOAuthClient, closeModal: () => void}
               state: "423142", //TODO: figure out how to do states
               scope: 'atproto',
             });
+
+            console.log(url.toString());
       
-            Navigation.Navigate(url.toString());
+            Navigation.NavigateToSteamWeb(url.toString());
           } catch (error) {
             throw error;
           }
@@ -45,7 +47,7 @@ const LoginModal: React.FC<{ client: BrowserOAuthClient, closeModal: () => void}
                 label="Your Bluesky username"
                 onChange={(e) =>
                     {
-                      setBOKDisabled(e.target.value.trim().length !== 0)
+                      setBOKDisabled(e.target.value.trim().length == 0)
                       setHandle(e.target.value);
                     }
                 }>

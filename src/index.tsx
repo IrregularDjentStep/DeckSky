@@ -25,16 +25,25 @@ import {
     BrowserOAuthClient
 } from '@atproto/oauth-client-browser'
 // import logo from "../assets/logo.png";
+const redirect_uri = `${window.location.origin}/decksky-callback`
+const client = await BrowserOAuthClient.load({
+        handleResolver: new AtprotoDohHandleResolver({dohEndpoint: 'https://dns.google/resolve'}),
+        //TODO: replace with production version
+        clientId:  `https://irregulardjentstep.github.io/oauth-client-metadata.json`,
+        
+    });
+await client.init();
 
-async function Content() {
+function DeckyCallback(){
+    console.log("callback happened");
+    return "hi";
+  }
+
+
+function Content() {
   const [modalResult, setModalResult] = useState<ShowModalResult | null>(null);
   // how to set different handle resolvers for different users?
-  const client = await BrowserOAuthClient.load({
-        handleResolver: new AtprotoDohHandleResolver({dohEndpoint: 'https://cloudflare-dns.com/dns-query'}),
-        //TODO: replace with production version
-        clientId:  `http://localhost?redirect_uri=${encodeURIComponent("https://127.0.0.1:8080/decksky-callback")}&scope=${encodeURIComponent('atproto transition:generic')}`
-    });
-  client.init();
+  
 
   //closes the current modal
   const closeModal = () => {
@@ -44,10 +53,12 @@ async function Content() {
 
 
   const openLoginModal = () => {
+    console.log(redirect_uri);
     const result = showModal(<LoginModal client={client} closeModal={closeModal} />);
     setModalResult(result);
     
   }
+
 
   // if there are no accounts added, show this
 
@@ -96,9 +107,7 @@ async function Content() {
 export default definePlugin(() => {
   console.log("Template plugin initializing, this is called once on frontend startup")
 
-  // serverApi.routerHook.addRoute("/decky-plugin-test", DeckyPluginRouterTest, {
-  //   exact: true,
-  // });
+  
 
   // Add an event listener to the "timer_event" event from the backend
   const listener = addEventListener<[
@@ -112,6 +121,8 @@ export default definePlugin(() => {
       body: `${test1}, ${test2}, ${test3}`
     });
   });
+
+  routerHook.addRoute("/decksky-callback", () => <DeckyCallback  />, { exact: true });
 
 
   return {
@@ -127,7 +138,7 @@ export default definePlugin(() => {
     onDismount() {
       console.log("Unloading")
       removeEventListener("timer_event", listener);
-      routerHook.removeRoute("/decky-plugin-test");
+      routerHook.removeRoute("/decksky-callback");
     },
   };
 });
