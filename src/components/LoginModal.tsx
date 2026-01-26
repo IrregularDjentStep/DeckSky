@@ -22,7 +22,7 @@ const LoginModal: React.FC<{ client: BrowserOAuthClient, closeModal: () => void}
 
             console.log(url.toString());
       
-            Navigation.NavigateToSteamWeb(url.toString());
+            Navigation.NavigateToExternalWeb(url.toString());
           } catch (error) {
             throw error;
           }

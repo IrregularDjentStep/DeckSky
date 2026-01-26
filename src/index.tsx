@@ -15,7 +15,7 @@ import {
   toaster,
   routerHook
 } from "@decky/api"
-import { useState } from "react";
+import { useState, ReactElement } from "react";
 import { FaShip } from "react-icons/fa";
 
 import LoginModal from './components/LoginModal'
@@ -122,6 +122,12 @@ export default definePlugin(() => {
     });
   });
 
+  const myPatch = routerHook.addPatch('/externalweb',
+    (props: { path: string; children: ReactElement }) => {
+      console.log(props);
+      return props
+    })
+
   routerHook.addRoute("/decksky-callback", () => <DeckyCallback  />, { exact: true });
 
 
@@ -138,6 +144,7 @@ export default definePlugin(() => {
     onDismount() {
       console.log("Unloading")
       removeEventListener("timer_event", listener);
+      routerHook.removePatch('/externalweb', myPatch);
       routerHook.removeRoute("/decksky-callback");
     },
   };
