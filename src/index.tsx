@@ -17,7 +17,7 @@ import {
 } from "@decky/api"
 import { useState } from "react";
 import { FaShip } from "react-icons/fa";
-
+import { AtpAgent, AtpSessionEvent, AtpSessionData } from '@atproto/api'
 import LoginModal from './components/LoginModal'
 import { createNewClient } from "./auth/client";
 import {
@@ -25,25 +25,24 @@ import {
     BrowserOAuthClient
 } from '@atproto/oauth-client-browser'
 // import logo from "../assets/logo.png";
-const redirect_uri = `${window.location.origin}/decksky-callback`
-const client = await BrowserOAuthClient.load({
+
+
+/* const client = await BrowserOAuthClient.load({
         handleResolver: new AtprotoDohHandleResolver({dohEndpoint: 'https://dns.google/resolve'}),
         //TODO: replace with production version
-        clientId:  `https://irregulardjentstep.github.io/oauth-client-metadata.json`,
-        
-    });
-await client.init();
+        clientId:  `http://localhost?redirect_uri=${encodeURIComponent('http://127.0.0.1:8080/routes/decksky-callback')}&scope=${encodeURIComponent('atproto transition:generic')}`
+    }); */
 
-function DeckyCallback(){
+/* function DeckyCallback(){
     console.log("callback happened");
     return "hi";
-  }
+  } */
 
 
 function Content() {
   const [modalResult, setModalResult] = useState<ShowModalResult | null>(null);
   // how to set different handle resolvers for different users?
-  
+/*   client.init(); */
 
   //closes the current modal
   const closeModal = () => {
@@ -53,9 +52,10 @@ function Content() {
 
 
   const openLoginModal = () => {
-    console.log(redirect_uri);
-    const result = showModal(<LoginModal client={client} closeModal={closeModal} />);
-    setModalResult(result);
+/*     const result = showModal(<LoginModal client={client} closeModal={closeModal} />);
+   */  
+      const result = showModal(<LoginModal closeModal={closeModal} />);  
+      setModalResult(result);
     
   }
 
@@ -122,8 +122,8 @@ export default definePlugin(() => {
     });
   });
 
-  routerHook.addRoute("/decksky-callback", () => <DeckyCallback  />, { exact: true });
-
+/*   routerHook.addRoute("/decksky-callback", () => <DeckyCallback  />, { exact: true });
+ */
 
   return {
     // The name shown in various decky menus
