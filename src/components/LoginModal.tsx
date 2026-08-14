@@ -1,35 +1,34 @@
+
 import { ConfirmModal, DialogBody, Focusable, TextField, Navigation} from "@decky/ui";
-
+import { BrowserOAuthClient } from "@atproto/oauth-client-browser";
+import { Browser } from "@decky/ui/dist/globals/steam-client/Browser";
 import { useState } from "react";
+import { resolveIdentity } from "../auth/client";
 
-import { createNewClient, resolveHandle } from "../auth/client"
 
-const LoginModal: React.FC<{ closeModal: () => void}> = ({closeModal}) =>{
+const LoginModal: React.FC<{ client: BrowserOAuthClient, closeModal: () => void}> = ({client, closeModal}) =>{
+
     const [bOKDisabled, setBOKDisabled] = useState<boolean>(true);
     const [handle, setHandle] = useState<string>('');
-    const client = createNewClient();
 
-    
-    const loginHandler = async (handle: string) => {
-      // validate and resolve handle first?
-      const identity = await resolveHandle(handle);
-      const state = "434321";
+    async function loginHandler(handle: string){
+          try {
+            const handleResolver = resolveIdentity(handle);
+            
+            const url = await client.authorize(handle, {
+              state: "423142", //TODO: figure out how to do states
+              scope: 'atproto',
+            });
 
-      if (identity == null){
-        throw new Error(`Failed to resolve handle: ${handle}`);
-      }
-
-      else if (identity !== null && identity === "Invalid handle format"){
-        throw new Error(identity);
-      }
-
-      const url = await client.authorize(handle, {
-        state,
-        scope: 'atproto transition:generic'
-      });
-
-      Navigation.NavigateToSteamWeb(url.toString());
+            console.log(url.toString());
+      
+            Navigation.NavigateToExternalWeb(url.toString());
+          } catch (error) {
+            throw error;
+          }
+      
     }
+    
 
     return (
         <ConfirmModal
@@ -39,8 +38,8 @@ const LoginModal: React.FC<{ closeModal: () => void}> = ({closeModal}) =>{
       bOKDisabled={bOKDisabled}
       onCancel={closeModal}
       onOK={() => {
-        console.log("Attempting to log in");
-        loginHandler(handle);
+        loginHandler(handle)
+        closeModal();
       }}>
         <DialogBody>
             <Focusable>
@@ -48,7 +47,7 @@ const LoginModal: React.FC<{ closeModal: () => void}> = ({closeModal}) =>{
                 label="Your Bluesky username"
                 onChange={(e) =>
                     {
-                      setBOKDisabled(e.target.value.trim().length == 0);
+                      setBOKDisabled(e.target.value.trim().length == 0)
                       setHandle(e.target.value);
                     }
                 }>

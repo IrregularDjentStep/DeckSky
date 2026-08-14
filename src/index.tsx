@@ -6,24 +6,44 @@ import {
   staticClasses,
   showModal,
   ShowModalResult,
+  Navigation,
 } from "@decky/ui";
 import {
   addEventListener,
   removeEventListener,
   definePlugin,
   toaster,
-  // routerHook
+  routerHook
 } from "@decky/api"
-import { useState } from "react";
+import { useState, ReactElement } from "react";
 import { FaShip } from "react-icons/fa";
 
 import LoginModal from './components/LoginModal'
-
+import { createNewClient } from "./auth/client";
+import {
+    AtprotoDohHandleResolver,
+    BrowserOAuthClient
+} from '@atproto/oauth-client-browser'
 // import logo from "../assets/logo.png";
+const redirect_uri = `${window.location.origin}/decksky-callback`
+const client = await BrowserOAuthClient.load({
+        handleResolver: new AtprotoDohHandleResolver({dohEndpoint: 'https://dns.google/resolve'}),
+        //TODO: replace with production version
+        clientId:  `https://irregulardjentstep.github.io/oauth-client-metadata.json`,
+        
+    });
+await client.init();
+
+function DeckyCallback(){
+    console.log("callback happened");
+    return "hi";
+  }
 
 
 function Content() {
-   const [modalResult, setModalResult] = useState<ShowModalResult | null>(null);
+  const [modalResult, setModalResult] = useState<ShowModalResult | null>(null);
+  // how to set different handle resolvers for different users?
+  
 
   //closes the current modal
   const closeModal = () => {
@@ -33,10 +53,14 @@ function Content() {
 
 
   const openLoginModal = () => {
-    const result = showModal(<LoginModal closeModal={closeModal} />);
+    console.log(redirect_uri);
+    const result = showModal(<LoginModal client={client} closeModal={closeModal} />);
     setModalResult(result);
     
   }
+
+
+  // if there are no accounts added, show this
 
   //otherwise, show every logged-in BSKY account
   return (
@@ -55,7 +79,7 @@ function Content() {
         <DialogButton
           onClick={openLoginModal}
         >
-          Add New Account...
+          "Add New Account..."
         </DialogButton>
       </PanelSectionRow>
 
@@ -83,9 +107,7 @@ function Content() {
 export default definePlugin(() => {
   console.log("Template plugin initializing, this is called once on frontend startup")
 
-  // serverApi.routerHook.addRoute("/decky-plugin-test", DeckyPluginRouterTest, {
-  //   exact: true,
-  // });
+  
 
   // Add an event listener to the "timer_event" event from the backend
   const listener = addEventListener<[
@@ -100,6 +122,15 @@ export default definePlugin(() => {
     });
   });
 
+  const myPatch = routerHook.addPatch('/externalweb',
+    (props: { path: string; children: ReactElement }) => {
+      console.log(props);
+      return props
+    })
+
+  routerHook.addRoute("/decksky-callback", () => <DeckyCallback  />, { exact: true });
+
+
   return {
     // The name shown in various decky menus
     name: "DeckSky",
@@ -113,7 +144,8 @@ export default definePlugin(() => {
     onDismount() {
       console.log("Unloading")
       removeEventListener("timer_event", listener);
-      // serverApi.routerHook.removeRoute("/decky-plugin-test");
+      routerHook.removePatch('/externalweb', myPatch);
+      routerHook.removeRoute("/decksky-callback");
     },
   };
 });
